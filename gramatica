@@ -1,0 +1,9 @@
+Q select D from T
+D distinct P | P
+P * | A
+A A , A1 | A1
+A1 1d A2
+A2 . 1d | 3ps
+T T , T1 | T1
+T1 1d T2
+T2 1d | 3ps
