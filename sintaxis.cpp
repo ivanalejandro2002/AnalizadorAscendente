@@ -26,6 +26,7 @@ int act= 0;
 struct nodoPendientes{
     int fila;
     int columna;
+    int produccion;
     int tipo;
 };
 bool entabla(vector<vector<nodoTabla> > &tabla, vector<nodoAutomata> &ascendente, int ptotales,int nodo,vector<vector<int> > &lecturas,int espacios,vector<set<int> > &siguientes,int normales,vector<vector<int> > &cualesProducciones, vector<int> &varOriginal){   
@@ -37,7 +38,7 @@ bool entabla(vector<vector<nodoTabla> > &tabla, vector<nodoAutomata> &ascendente
             cout<<":0";
             for(int reduc: siguientes[varOriginal[pii]]){
                 cout<<reduc<<",";
-                pendientes.push_back({nodo,reduc,2});
+                pendientes.push_back({nodo,reduc,pii,2});
                 /*if(tabla[nodo][reduc].tipo!=0){
                     cout<<"La gramatica es redundante por la derecha\n";
                     return 0;
@@ -157,10 +158,10 @@ bool entabla(vector<vector<nodoTabla> > &tabla, vector<nodoAutomata> &ascendente
             cout<<"La gramatica tiene redundancias por la derecha IV\n";
             return 0;
         }
-        if(tabla[w.fila][w.columna].tipo>0 && tabla[w.fila][w.columna].numero != w.columna){
+        if(tabla[w.fila][w.columna].tipo>0 && tabla[w.fila][w.columna].numero != w.produccion){
             cout<<"La gramatica tiene redundacias por la derecha V\n";
         }
-        tabla[w.fila][w.columna] = {2,w.columna};
+        tabla[w.fila][w.columna] = {2,w.produccion};
     }
     ascendente[nodo].visto=1;
     bool ret=1;

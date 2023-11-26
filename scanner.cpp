@@ -141,7 +141,7 @@ int main(int argc,char *argv[]){
             if(existe_Error)continue;
             //cout<<registro_Tokens.indice_inicial<<","<<registro_Tokens.indice_final<<"::\n";
             bool correcto;
-            //correcto = 
+            correcto = registro_Tokens.sintaxisea(tabla,registro_Tokens.indice_inicial,registro_Tokens.indice_final,cantidadTokens+1,lecturas,varOriginal);
             
             if(!correcto){
                 while(registro_Tokens.indice_final>registro_Tokens.indice_inicial){
