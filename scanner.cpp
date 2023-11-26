@@ -19,7 +19,7 @@ int main(int argc,char *argv[]){
     int cantidadTokens = 0;
     vector< string > reservadas = {"select", "distinct", "from"};
     vector<string> simbolos = {"*",",","."};
-    vector<string> nombres = {"","select","distinct","from","star","coma","dot"};
+    vector<string> nombres = {"Epsilon","select","distinct","from","star","coma","dot"};
     nombres.push_back("NUMERO");
     nombres.push_back("IDENTIFICADOR");
     nombres.push_back("CADENA");
@@ -43,7 +43,17 @@ int main(int argc,char *argv[]){
     int ptotales=0;
     if(!registro(terminos,primeros,siguientes,arbol,cantidadTokens+1,todosComponentes,inversoterminos,ptotales))return 0;
     vector<vector<int> > lecturas;
-    guarda_registro(lecturas);
+    vector<vector<int> > cualesProducciones(terminos.size()+2);
+    vector<int> varOriginal;
+    guarda_registro(lecturas,terminos["1d"],cantidadTokens+1,terminos["3ps"],cualesProducciones,varOriginal);
+    lecturas.push_back({cantidadTokens+2});
+    ptotales++;
+    cout<<cantidadTokens<<","<<terminos.size()<<","<<ptotales<<"\n";
+    for(int i =0;i<lecturas.size();i++){
+        for(int z:lecturas[i])cout<<z<<",";
+        cout<<"\n";
+    }
+    
     //cout<<":)\n";
     /*for(int i=1;i<todosComponentes;i++){
         cout<<inversoterminos[i]<<"::\n{";
@@ -54,6 +64,8 @@ int main(int argc,char *argv[]){
         cout<<"}\n";
     }
     cout<<"\n\n";
+    */
+    
     for(int i=1;i<todosComponentes;i++){
         cout<<inversoterminos[i]<<"::\n{";
         for(int z:siguientes[i]){
@@ -63,14 +75,42 @@ int main(int argc,char *argv[]){
         cout<<"}\n";
     }
     cout<<terminos.size()-cantidadTokens-1<<"\n";
-    */
+    
     //vector<vector<vector<int> > > tabla(terminos.size()+1,vector<vector<int> >(cantidadTokens+4));
     //int epsilon = cantidadTokens+1;
     //if(!entabla(primeros,siguientes,tabla,cantidadTokens+2,terminos["3ps"],terminos["1d"]))return 0;
-    vector<nodoAutomata> ascendente(1);
-    ascendente.push_back(nodoAutomata(ptotales,0));
-    vector<vector<nodoTabla> > tabla;
-    entabla(tabla,ascendente,ptotales);
+    vector<nodoAutomata> ascendente(1,nodoAutomata(0,0));
+    ascendente.push_back(nodoAutomata(ptotales+2,0));
+    tradEstados[ascendente[1].indices]=ascendente.size()-1;
+    vector<vector<nodoTabla> > tabla(2,vector<nodoTabla>(terminos.size()+2,{0,0}));
+    //tabla.push_back(vector<nodoTabla>(terminos.size()+2));
+    
+    siguientes[cantidadTokens+2].clear();
+    siguientes[cantidadTokens+2].insert(0);
+    for(int i =0;i<siguientes.size();i++){
+        if(siguientes[i].count(terminos["1d"])){
+            siguientes[i].erase(terminos["1d"]);
+            siguientes[i].insert(cantidadTokens+1);
+        }
+        if(siguientes[i].count(terminos["3ps"])){
+            siguientes[i].erase(terminos["3ps"]);
+            siguientes[i].insert(0);
+        }
+    }
+    if(!entabla(tabla,ascendente,ptotales,1,lecturas,terminos.size()+2,siguientes,cantidadTokens+1,cualesProducciones,varOriginal))return 0;
+    //------------------------------------------------------------------------------------------------------------------
+    tabla[estadoFinal][0]={3,0};
+    cout<<"\n\n\n";
+    for(int i=0;i<tabla.size();i++){
+        cout<<i<<"\n";
+        for(int j =0;j<tabla[i].size();j++){
+            if(j<=cantidadTokens+1)cout<<"\t"<<nombres[j]<<": ";
+            else cout<<"\t"<<inversoterminos[j]<<": ";
+            cout<<"("<<tabla[i][j].tipo<<","<<tabla[i][j].numero<<")";
+            cout<<"\n";
+        }
+        cout<<"\n";
+    }
     //-----------------------------------------------------------------------------
     bool existe_Error=0;
     bool comentariote = 0;

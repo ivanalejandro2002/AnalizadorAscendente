@@ -2,18 +2,26 @@
 #define sintaxis_Autogram
 #include <vector>
 #include <map>
+#include <queue>
 using namespace std;
-
+int estadoFinal=-1;
+queue<pair<int,bool> > orden;
+map<vector<int> , int> tradEstados;
 struct nodoTabla{
     int tipo;
     int numero;
 };
 struct nodoAutomata{
-    vector <int> indice;
-    vector <int> dir;
-    vector <bool> visto;
+    bool visto;
+    vector<bool> metidos;
+    vector <int> indices;
+    vector <pair<int,int> > dir;
     map<int,vector<int> > elementos;
-    nodoAutomata(int t,int v):indice(vector<int>(t,v)){};
+    nodoAutomata(int t,int v):metidos(vector<bool>(t)),indices(vector<int>(t,v)),visto(0){};
+    void resetea(int x){
+        metidos.clear();
+        metidos.resize(x);
+    }
 };
 
 #endif
