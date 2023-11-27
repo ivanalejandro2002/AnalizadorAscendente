@@ -28,7 +28,7 @@ int main(int argc,char *argv[]){
     /*for(int i = 1; i < argc ; i++){
         cout << argv[i] << "\n";
     }*/
-    arbol->pasito('-')->pasito('-')->trabado=1;
+    arbol->pasito('/')->pasito('/')->trabado=1;
     arbol->pasito('/')->pasito('*')->trabado=2;
     arbol->pasito('*')->pasito('/')->trabado=3;
     cantidadTokens++;
@@ -46,13 +46,13 @@ int main(int argc,char *argv[]){
     vector<vector<int> > cualesProducciones(terminos.size()+2);
     vector<int> varOriginal;
     guarda_registro(lecturas,terminos["1d"],cantidadTokens+1,terminos["3ps"],cualesProducciones,varOriginal);
-    lecturas.push_back({cantidadTokens+2});
+    lecturas.push_back({cantidadTokens+1,cantidadTokens+2});
     ptotales++;
-    cout<<cantidadTokens<<","<<terminos.size()<<","<<ptotales<<"\n";
+    /*cout<<cantidadTokens<<","<<terminos.size()<<","<<ptotales<<"\n";
     for(int i =0;i<lecturas.size();i++){
         for(int z:lecturas[i])cout<<z<<",";
         cout<<"\n";
-    }
+    }*/
     
     //cout<<":)\n";
     /*for(int i=1;i<todosComponentes;i++){
@@ -66,7 +66,7 @@ int main(int argc,char *argv[]){
     cout<<"\n\n";
     */
     
-    for(int i=1;i<todosComponentes;i++){
+    /*for(int i=1;i<todosComponentes;i++){
         cout<<inversoterminos[i]<<"::\n{";
         for(int z:siguientes[i]){
             if(z>cantidadTokens+1){cout<<"Epsilon, ";continue;}
@@ -75,14 +75,19 @@ int main(int argc,char *argv[]){
         cout<<"}\n";
     }
     cout<<terminos.size()-cantidadTokens-1<<"\n";
-    
+    */
     //vector<vector<vector<int> > > tabla(terminos.size()+1,vector<vector<int> >(cantidadTokens+4));
     //int epsilon = cantidadTokens+1;
     //if(!entabla(primeros,siguientes,tabla,cantidadTokens+2,terminos["3ps"],terminos["1d"]))return 0;
-    vector<nodoAutomata> ascendente(1,nodoAutomata(0,0));
-    ascendente.push_back(nodoAutomata(ptotales+2,0));
-    tradEstados[ascendente[1].indices]=ascendente.size()-1;
-    vector<vector<nodoTabla> > tabla(2,vector<nodoTabla>(terminos.size()+2,{0,0}));
+    /*cout<<ptotales<<"\n";
+    for(int z: lecturas[ptotales-1])cout<<z<<",";
+    cout<<"\n";
+    */
+    vector<nodoAutomata> ascendente(1,nodoAutomata(ptotales+2,-1));
+    ascendente[0].indices[ptotales-1]=0;
+    //ascendente.push_back(nodoAutomata(ptotales+2,0));
+    //tradEstados[ascendente[1].indices]=ascendente.size()-1;
+    vector<vector<nodoTabla> > tabla(1,vector<nodoTabla>(terminos.size()+2,{0,0}));
     //tabla.push_back(vector<nodoTabla>(terminos.size()+2));
     
     siguientes[cantidadTokens+2].clear();
@@ -97,10 +102,11 @@ int main(int argc,char *argv[]){
             siguientes[i].insert(0);
         }
     }
-    if(!entabla(tabla,ascendente,ptotales,1,lecturas,terminos.size()+2,siguientes,cantidadTokens+1,cualesProducciones,varOriginal))return 0;
+    if(!entabla(tabla,ascendente,ptotales,0,lecturas,terminos.size()+2,siguientes,cantidadTokens+1,cualesProducciones,varOriginal))return 0;
     //------------------------------------------------------------------------------------------------------------------
     tabla[estadoFinal][0]={3,0};
-    cout<<"\n\n\n";
+    tabla[1][0]={3,0};
+    /*cout<<"\n\n\n";
     for(int i=0;i<tabla.size();i++){
         cout<<i<<"\n";
         for(int j =0;j<tabla[i].size();j++){
@@ -111,6 +117,7 @@ int main(int argc,char *argv[]){
         }
         cout<<"\n";
     }
+    */
     //-----------------------------------------------------------------------------
     bool existe_Error=0;
     bool comentariote = 0;
@@ -118,13 +125,14 @@ int main(int argc,char *argv[]){
     fin.open(argv[1]);
     if(argc>1){
         bool errores_general=0;
-        string lecturas;
-        while(getline(fin,lecturas)){
-            existe_Error = evalua(lecturas,arbol,cantidadTokens,nombres,comentariote,registro_Tokens);
+        string lecturando;
+        while(getline(fin,lecturando)){
+            existe_Error = evalua(lecturando,arbol,cantidadTokens,nombres,comentariote,registro_Tokens);
             errores_general|=existe_Error;
             if(existe_Error)continue;
             //registro_Tokens.recorre();
         }
+        if(!registro_Tokens.sintaxisea(tabla,0,registro_Tokens.indice_final,cantidadTokens+1,lecturas,varOriginal,nombres,inversoterminos))return 0;
         if(errores_general)cout<<"El programa termino con errores\n";
         else cout<<"El programa termino exitosamente\n";
     }else{
@@ -141,7 +149,7 @@ int main(int argc,char *argv[]){
             if(existe_Error)continue;
             //cout<<registro_Tokens.indice_inicial<<","<<registro_Tokens.indice_final<<"::\n";
             bool correcto;
-            correcto = registro_Tokens.sintaxisea(tabla,registro_Tokens.indice_inicial,registro_Tokens.indice_final,cantidadTokens+1,lecturas,varOriginal);
+            correcto = registro_Tokens.sintaxisea(tabla,registro_Tokens.indice_inicial,registro_Tokens.indice_final,cantidadTokens+1,lecturas,varOriginal,nombres,inversoterminos);
             
             if(!correcto){
                 while(registro_Tokens.indice_final>registro_Tokens.indice_inicial){

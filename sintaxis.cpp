@@ -33,11 +33,11 @@ bool entabla(vector<vector<nodoTabla> > &tabla, vector<nodoAutomata> &ascendente
     vector<nodoPendientes> pendientes;
     for(int pii=0;pii<lecturas.size();pii++){
         if((int)ascendente[nodo].indices[pii]>=(int)lecturas[pii].size() || lecturas[pii][ascendente[nodo].indices[pii]]==0){
-            cout<<"@"<<pii<<ascendente[nodo].indices[pii]<<","<<lecturas[pii].size()<<"@";
+            //cout<<"@"<<pii<<ascendente[nodo].indices[pii]<<","<<lecturas[pii].size()<<"@";
             ascendente[nodo].indices[pii]=-1;
-            cout<<":0";
+            //cout<<":0";
             for(int reduc: siguientes[varOriginal[pii]]){
-                cout<<reduc<<",";
+                //cout<<reduc<<",";
                 pendientes.push_back({nodo,reduc,pii,2});
                 /*if(tabla[nodo][reduc].tipo!=0){
                     cout<<"La gramatica es redundante por la derecha\n";
@@ -46,7 +46,7 @@ bool entabla(vector<vector<nodoTabla> > &tabla, vector<nodoAutomata> &ascendente
                 tabla[nodo][reduc]={2,zi};
                 */
             }
-            cout<<":__:";
+            //cout<<":__:";
         }
     }
     if(ascendente[nodo].visto)return 1;
@@ -60,20 +60,20 @@ bool entabla(vector<vector<nodoTabla> > &tabla, vector<nodoAutomata> &ascendente
         pair<int,vector<int> > z;
         z.first = it->first;
         z.second = it->second;
-        cout<<")";
-        cout<<z.first<<"::(";
+        //cout<<")";
+        //cout<<z.first<<"::(";
         while(!orden.empty())orden.pop();
         ascendente[nodo].resetea(ptotales+2);
         vector<int> aux(ascendente[nodo].indices.size(),-1);
         for(auto zi: z.second){
-            cout<<zi<<",";
+            //cout<<zi<<",";
             ascendente[nodo].metidos[zi]=1;
             orden.push({zi,1});
         }
         while(!orden.empty()){
             pair<int,bool> frentecola = orden.front();
             int zi = frentecola.first;
-            cout<<zi<<",";
+            //cout<<zi<<",";
             orden.pop();
             
             if(frentecola.second)
@@ -83,10 +83,10 @@ bool entabla(vector<vector<nodoTabla> > &tabla, vector<nodoAutomata> &ascendente
                 
             }else{
                 //pendientes.push_back({nodo,lecturas[zi][aux[zi]],1});
-                cout<<":|";
+                //cout<<":|";
                 if(lecturas[zi][aux[zi]]>normales){
-                    cout<<"_"<<lecturas[zi][aux[zi]]-normales-1;
-                    cout<<"#"<<aux[lecturas[zi][aux[zi]]-normales-1];
+                    //cout<<"_"<<lecturas[zi][aux[zi]]-normales-1;
+                    //cout<<"#"<<aux[lecturas[zi][aux[zi]]-normales-1];
                     for(int variables:cualesProducciones[lecturas[zi][aux[zi]]]){
                         if(ascendente[nodo].metidos[variables])continue;
                         if(aux[variables]>0){
@@ -95,34 +95,34 @@ bool entabla(vector<vector<nodoTabla> > &tabla, vector<nodoAutomata> &ascendente
                         }
                         if(aux[variables]<0){
                             ascendente[nodo].metidos[variables]=1;
-                            cout<<"meto{"<<variables<<"}";
+                            //cout<<"meto{"<<variables<<"}";
                             orden.push({variables,0});
                         }
                     }
                 }
             }
         }
-        cout<<"YAY";
+        //cout<<"YAY";
         if(!tradEstados[aux]){
             tabla.push_back(vector<nodoTabla>(espacios,{0,0}));
-            cout<<z.first<<"OOO";
-            cout<<tabla[nodo].size();
+            //cout<<z.first<<"OOO";
+            //cout<<tabla[nodo].size();
             if(tabla[nodo][z.first].numero>0){
                 cout<<"La gramatica tiene redundancias por la derecha :(\n";
                 return 0;
             }
             ascendente.push_back(nodoAutomata(ascendente[nodo].indices.size(),-1));
             ascendente[ascendente.size()-1].indices = aux;
-            cout<<ascendente.size()-1<<":&&\n";
-            for(int z:aux){
+            //cout<<ascendente.size()-1<<":&&\n";
+            /*for(int z:aux){
                 cout<<z<<",";
-            }
-            cout<<"\n";
+            }*/
+            //cout<<"\n";
             tradEstados[aux]=ascendente.size()-1;
             if(nodo == 1 && z.first==normales+1)estadoFinal=ascendente.size()-1;
         }else{
             int auxiliar = tradEstados[aux];
-            cout<<"Dirigiendo a "<<auxiliar<<"\n";
+            //cout<<"Dirigiendo a "<<auxiliar<<"\n";
             if(tabla[nodo][z.first].tipo==2){
                 cout<<"La gramatica tiene redundancias por la derecha R y S\n";
                 return 0;
@@ -133,9 +133,9 @@ bool entabla(vector<vector<nodoTabla> > &tabla, vector<nodoAutomata> &ascendente
             }
             tabla[nodo][z.first]={1,auxiliar};
         }
-        cout<<"\n\t";
+        //cout<<"\n\t";
         int direccionandose = tradEstados[aux];
-        cout<<direccionandose<<":____\n";
+        //cout<<direccionandose<<":____\n";
         ascendente[nodo].dir.push_back({direccionandose,z.first});
         if(tabla[nodo][z.first].tipo==2){
             cout<<"La gramatica tiene redundancias por la derecha VI\n";
@@ -146,31 +146,33 @@ bool entabla(vector<vector<nodoTabla> > &tabla, vector<nodoAutomata> &ascendente
             return 0;
         }
         tabla[nodo][z.first]={1,direccionandose};
-        cout<<"TErmino\n";
-        cout<<"\n";
+        //cout<<"TErmino\n";
+        //cout<<"\n";
     }
 
 
     for(auto w:pendientes){
-        cout<<"["<<nodo<<","<<tabla.size()<<"]";
-        cout<<"{"<<w.fila<<","<<w.columna<<","<<w.tipo<<"} ("<<tabla[w.fila][w.columna].tipo<<","<<tabla[w.fila][w.columna].numero<<")";
+        //cout<<"["<<nodo<<","<<tabla.size()<<"]";
+        //cout<<"{"<<w.fila<<","<<w.columna<<","<<w.tipo<<"} ("<<tabla[w.fila][w.columna].tipo<<","<<tabla[w.fila][w.columna].numero<<")";
         if(tabla[w.fila][w.columna].tipo>0 && tabla[w.fila][w.columna].tipo!=w.tipo){
             cout<<"La gramatica tiene redundancias por la derecha IV\n";
             return 0;
         }
-        if(tabla[w.fila][w.columna].tipo>0 && tabla[w.fila][w.columna].numero != w.produccion){
+        if(tabla[w.fila][w.columna].tipo==1){
             cout<<"La gramatica tiene redundacias por la derecha V\n";
+            return 0;
         }
         tabla[w.fila][w.columna] = {2,w.produccion};
     }
     ascendente[nodo].visto=1;
     bool ret=1;
     for(pair<int,int> z:ascendente[nodo].dir){
-        cout<<"\n................."<<z.first<<"\n";
+        /*cout<<"\n................."<<z.first<<"\n";
         for(int z:ascendente[z.first].indices){
             cout<<z<<",";
         }
         cout<<"\n";
+        */
         ret&=entabla(tabla,ascendente,ptotales,z.first,lecturas,espacios,siguientes,normales,cualesProducciones,varOriginal);
         if(!ret)return 0;
     }
