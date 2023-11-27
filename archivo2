@@ -1,1 +1,1 @@
-for i in range 2
+select distinct a.first,b.second,c.otro from w,x
